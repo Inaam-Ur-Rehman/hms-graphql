@@ -1,0 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+  MANAGER
+}
+
+enum USER_TYPE {
+  STUDENT
+  JOB_HOLDER
+  OTHER
+}
+
+model User {
+  id       String   @id @default(uuid())
+  name     String
+  username String   @unique
+  email    String?  @unique
+  password String
+  profile  Profile?
+  role     Role     @default(USER)
+  roomId   String?
+  room     Room?    @relation(fields: [roomId], references: [id])
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  fee       Fee[]
+  request   Request[]
+  complaint Complaint[]
+
+  @@map(name: "users")
+}
+
+model Profile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  fatherName       String    @map("father_name")
+  cnic             String    @unique
+  address          String
+  phone            String    @unique
+  emergencyContact String    @map("emergency_contact")
+  bloodGroup       String    @map("blood_group")
+  cnicFront        String    @map("cnic_front")
+  cnicBack         String    @map("cnic_back")
+  userType         USER_TYPE @default(OTHER) @map("user_type")
+  image            String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map(name: "profiles")
+}
+
+model Room {
+  id         String  @id @default(uuid())
+  roomNumber Int     @unique @map("room_number")
+  floor      Int?
+  capacity   Int
+  status     Boolean @default(true)
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  users     User[]
+  inventory Inventory[]
+
+  @@map(name: "rooms")
+}
+
+enum Days {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model Menu {
+  id        String   @id @default(uuid())
+  day       Days     @unique
+  breakfast String
+  lunch     String
+  dinner    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map(name: "menus")
+}
+
+model Inventory {
+  id        String   @id @default(uuid())
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id])
+  item      String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map(name: "inventories")
+}
+
+model Fee {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map(name: "fees")
+}
+
+enum Service_Type {
+  ROOM_CLEANING
+  ROOM_MAINTAINANCE
+  ROOM_CHANGE
+  OTHER
+}
+
+model Request {
+  id        String       @id @default(uuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  type      Service_Type
+  message   String
+  status    Boolean      @default(false)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@map(name: "requests")
+}
+
+// Complaints 
+
+model Complaint {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  message   String
+  status    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map(name: "complaints")
+}
