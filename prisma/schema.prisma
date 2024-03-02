@@ -15,7 +15,6 @@ enum Role {
   USER
   MANAGER
 }
-
 enum USER_TYPE {
   STUDENT
   JOB_HOLDER
@@ -118,6 +117,7 @@ model Fee {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   amount    Int
+  month     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

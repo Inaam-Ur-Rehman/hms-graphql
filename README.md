@@ -16,17 +16,23 @@ This is hostel management system. It is a web application that is used to manage
 - Manage Requests
 - Manage Mess
 
+## TODO
+
+- [x] Add Fees Module
+- [ ] Add Expenses Module
+- [ ] Add Visitors Module
+- [ ] Add Complaints Module
+- [ ] Add Notices Module
+- [ ] Add Requests Module
+- [ ] Add Inventory Module
+
 ## Technologies
 
 - Node.js
 - Express.js
 - GraphQL
 - Apollo Server
-- Apollo Client
 - PostgreSQL
-- Nuxt.js
-- Vuetify
-- Axios
 - JWT
 - Bcrypt
 - Nodemailer
